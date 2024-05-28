@@ -1,0 +1,74 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+Documentation    Test scenario for creating, reading, updating, and deleting projects in GitLab.
+
+Pre Condition    User should be logged in.
+Post Condition   User can perform CRUD operations on projects.
+Tags             project, CRUD, positive, negative, gitlab
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+# NOTE: Please Remove your login credential before uploading Assignments
+
+# TODO: Write Project creation field variables
+
+LoginUrl = https://gitlab.com/users/sign_in
+ProjectsUrl = https://gitlab.com/dashboard/projects
+ValidProjectName = MyTestProject
+UpdatedProjectName = MyUpdatedProject
+ExistingProjectName = ExistingProject
+
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# TODO: Write Positive and Negative Test Cases and Test Process steps
+
+# Positive Test examples are below write test process steps for each below test case
+
+	Create blank project
+    [Documentation]    Create a blank project
+    Open Browser    ${ProjectsUrl}    chrome
+    Click Button    id=new_project_link
+    Input Text    id=project_name    ${ValidProjectName}
+    Click Button    id=create_project_button
+    Wait Until Element Is Visible    id=project_created_message    10s
+    [Teardown]    Close Browser
+
+Update project name
+    [Documentation]    Update the name of an existing project
+    Open Browser    ${ProjectsUrl}    chrome
+    Click Link    ${ValidProjectName}
+    Click Button    id=edit_project_button
+    Input Text    id=project_name    ${UpdatedProjectName}
+    Click Button    id=save_changes_button
+    Wait Until Element Is Visible    id=project_updated_message    10s
+    [Teardown]    Close Browser
+
+Delete project
+    [Documentation]    Delete an existing project
+    Open Browser    ${ProjectsUrl}    chrome
+    Click Link    ${UpdatedProjectName}
+    Click Button    id=delete_project_button
+    Confirm Action
+    Wait Until Element Is Visible    id=project_deleted_message    10s
+    [Teardown]    Close Browser
+
+# Negative Test examples are below write test process steps for each below test case
+
+Create project with existing name
+    [Documentation]    Try to create a project with a name that already exists
+    Open Browser    ${ProjectsUrl}    chrome
+    Click Button    id=new_project_link
+    Input Text    id=project_name    ${ExistingProjectName}
+    Click Button    id=create_project_button
+    Wait Until Element Is Visible    id=error_message    10s
+    [Teardown]    Close Browser
+
+

@@ -1,0 +1,91 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+Documentation    Test scenario for user registration with valid and invalid credentials.
+
+Pre Condition    User should not be registered with the test credentials.
+Post Condition   User can log in with valid credentials and cannot register with invalid inputs.
+Tags             registration, positive, negative
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+# NOTE: Please Remove your login credential before uploading Assignments
+
+# TODO: Write Registration field variables
+
+LoginUrl = https://gitlab.com/users/sign_up
+ValidUsername = 
+ValidPassword = 
+ValidEmail = 
+InvalidEmail = 
+
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# TODO: Write Positive and Negative Test Cases and Test Process steps (Think about possible test cases)
+
+# Positive Test examples are below write test process steps for each below test case
+
+	Register user with valid username and password
+    [Documentation]    Register a user with valid username and password
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=new_user_username    ${ValidUsername}
+    Input Text    id=new_user_password    ${ValidPassword}
+    Input Text    id=new_user_email       ${ValidEmail}
+    Click Button    id=new_user_register_button
+    Wait Until Element Is Visible    id=welcome_message    10s
+    [Teardown]    Close Browser
+
+# Negative Test examples keywords are below write test process steps for each below test case 
+
+Register user with same above username
+    [Documentation]    Register with a username that is already taken
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=new_user_username    ${ValidUsername}
+    Input Text    id=new_user_password    ${ValidPassword}
+    Input Text    id=new_user_email       anotheremail@example.com
+    Click Button    id=new_user_register_button
+    Wait Until Element Is Visible    id=error_message    10s
+    Element Text Should Be    id=error_message    Username has already been taken
+    [Teardown]    Close Browser
+
+Register user with empty password
+    [Documentation]    Register with an empty password
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=new_user_username    newuser123
+    Input Text    id=new_user_password    ${EMPTY}
+    Input Text    id=new_user_email       newuser123@example.com
+    Click Button    id=new_user_register_button
+    Wait Until Element Is Visible    id=error_message    10s
+    Element Text Should Be    id=error_message    Password can't be blank
+    [Teardown]    Close Browser
+
+Register user with invalid email
+    [Documentation]    Register with an invalid email
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=new_user_username    newuser124
+    Input Text    id=new_user_password    TestPass!123
+    Input Text    id=new_user_email       ${InvalidEmail}
+    Click Button    id=new_user_register_button
+    Wait Until Element Is Visible    id=error_message    10s
+    Element Text Should Be    id=error_message    Email is invalid
+    [Teardown]    Close Browser
+
+Register user without recaptcha
+    [Documentation]    Register without completing recaptcha
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=new_user_username    newuser125
+    Input Text    id=new_user_password    TestPass!123
+    Input Text    id=new_user_email       newuser125@example.com
+    # Assume there's a recaptcha element to be bypassed or not completed
+    Click Button    id=new_user_register_button
+    Wait Until Element Is Visible    id=error_message    10s
+    Element Text Should Be    id=error_message    Please complete the recaptcha
+    [Teardown]    Close Browser
+

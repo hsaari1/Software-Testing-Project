@@ -1,0 +1,77 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+Documentation	Issue Test scenario. CRUD Operation: Create, Read, Update, Delete
+
+# TODO: Write Precondition and Postcondition, Tags 
+
+Pre Condition    Project must be created by the user
+Post Condition   Issues are created, updated, and deleted
+Tags             issue, CRUD, gitlab
+
+#******************* Common Variables ********************
+
+
+*** Variables ***
+
+LoginUrl = https://gitlab.com/users/sign_in
+ProjectUrl = https://gitlab.com/your_username/your_project/issues
+IssueTitle = TestIssue
+UpdatedIssueTitle = UpdatedTestIssue
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+Create issue
+    [Documentation]    Create a new issue
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=username    your_username
+    Input Text    id=password    your_password
+    Click Button    name=commit
+    Go To    ${ProjectUrl}
+    Click Link    New issue
+    Input Text    id=issue_title    ${IssueTitle}
+    Click Button    Create issue
+    Wait Until Element Is Visible    //div[contains(text(), 'created successfully')]    10s
+    [Teardown]    Close Browser
+
+Update issue name
+    [Documentation]    Update the title of an existing issue
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=username    your_username
+    Input Text    id=password    your_password
+    Click Button    name=commit
+    Go To    ${ProjectUrl}
+    Click Link    ${IssueTitle}
+    Click Button    Edit
+    Input Text    id=issue_title    ${UpdatedIssueTitle}
+    Click Button    Save changes
+    Wait Until Element Is Visible    //div[contains(text(), 'updated successfully')]    10s
+    [Teardown]    Close Browser
+
+Create second issue with updated name
+    [Documentation]    Create a new issue with the updated name of the first issue
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=username    your_username
+    Input Text    id=password    your_password
+    Click Button    name=commit
+    Go To    ${ProjectUrl}
+    Click Link    New issue
+    Input Text    id=issue_title    ${UpdatedIssueTitle}
+    Click Button    Create issue
+    Wait Until Element Is Visible    //div[contains(text(), 'created successfully')]    10s
+    [Teardown]    Close Browser
+
+Delete issue
+    [Documentation]    Delete an existing issue
+    Open Browser    ${LoginUrl}    chrome
+    Input Text    id=username    your_username
+    Input Text    id=password    your_password
+    Click Button    name=commit
+    Go To    ${ProjectUrl}
+    Click Link    ${UpdatedIssueTitle}
+    Click Button    Close issue
+    Wait Until Element Is Visible    //div[contains(text(), 'closed successfully')]    10s
+    [Teardown]    Close Browser
