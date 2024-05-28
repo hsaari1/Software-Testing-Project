@@ -1,2 +1,3 @@
 # Software-Testing-Project
-Software Testing Project from school
+Hannes Saari
+Software Testing Project
